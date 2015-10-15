@@ -3,18 +3,21 @@ MAKE_LLVM=clang -S -emit-llvm
 C_FILES=$(wildcard *.c)
 
 TARGETS_LL=$(foreach var,$(C_FILES), $(addprefix $(basename $(var)),.ll))
-TARGETS_PNG=$(foreach var,$(C_FILES), $(addprefix $(basename $(var)),.png))
-TARGETS=$(TARGETS_LL) $(TARGETS_PNG)
+TARGETS=$(TARGETS_LL)
+
+ANALYSIS:=cfg
 
 all: $(TARGETS)
 
 %.ll : %.c
 	$(MAKE_LLVM) $<
 
-%.png : %.ll
-	opt -analyze -dot-callgraph $<
-	dot -Tpng callgraph.dot > $@
-	rm callgraph.dot
+analysis-for-% : %.ll
+	opt -analyze -dot-$(ANALYSIS) $<
+
+%.png : %.dot
+	dot -Tpng $< > $@
+	rm $<
 
 noise:
 	@echo $(C_FILES)
@@ -23,3 +26,4 @@ noise:
 clean:
 	-rm ./*.ll
 	-rm ./*.png
+	-rm ./*.dot
