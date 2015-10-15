@@ -1,4 +1,4 @@
-; ModuleID = 'Task2v2.c'
+; ModuleID = 'Task2.c'
 target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
@@ -11,7 +11,35 @@ define signext i8 @tolower(i8 signext %s) #0 {
 }
 
 ; Function Attrs: nounwind uwtable
-define void @tolower_str(i8* %s) #0 {
+define void @tolower_str1(i8* %s) #0 {
+  %1 = alloca i8*, align 8
+  store i8* %s, i8** %1, align 8
+  br label %2
+
+; <label>:2                                       ; preds = %7, %0
+  %3 = load i8*, i8** %1, align 8
+  %4 = load i8, i8* %3, align 1
+  %5 = sext i8 %4 to i32
+  %6 = icmp ne i32 %5, 0
+  br i1 %6, label %7, label %14
+
+; <label>:7                                       ; preds = %2
+  %8 = load i8*, i8** %1, align 8
+  %9 = load i8, i8* %8, align 1
+  %10 = call signext i8 @tolower(i8 signext %9)
+  %11 = load i8*, i8** %1, align 8
+  store i8 %10, i8* %11, align 1
+  %12 = load i8*, i8** %1, align 8
+  %13 = getelementptr inbounds i8, i8* %12, i32 1
+  store i8* %13, i8** %1, align 8
+  br label %2
+
+; <label>:14                                      ; preds = %2
+  ret void
+}
+
+; Function Attrs: nounwind uwtable
+define void @tolower_str2(i8* %s) #0 {
   %1 = alloca i8*, align 8
   store i8* %s, i8** %1, align 8
   br label %2
