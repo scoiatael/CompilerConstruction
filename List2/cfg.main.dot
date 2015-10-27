@@ -1,0 +1,14 @@
+digraph "CFG for 'main' function" {
+	label="CFG for 'main' function";
+
+	Node0xf56dc0 [shape=record,label="{%0:\l  %reg1 = alloca i32, align 4\l  %table_size = alloca i32, align 4\l  %table = alloca [4 x i32], align 16\l  %i = alloca i32, align 4\l  store i32 0, i32* %reg1\l  store i32 4, i32* %table_size, align 4\l  %reg2 = bitcast [4 x i32]* %table to i8*\l  call void @llvm.memcpy.p0i8.p0i8.i64(i8* %reg2, i8* bitcast ([4 x i32]*\l... @main.table to i8*), i64 16, i32 16, i1 false)\l  %reg3 = getelementptr inbounds [4 x i32], [4 x i32]* %table, i32 0, i32 0\l  %reg4 = getelementptr inbounds [4 x i32], [4 x i32]* %table, i32 0, i32 0\l  %reg5 = getelementptr inbounds i32, i32* %reg4, i64 4\l  call void @sort(i32* %reg3, i32* %reg5)\l  store i32 0, i32* %i, align 4\l  br label %label6\l}"];
+	Node0xf56dc0 -> Node0xf57e30;
+	Node0xf57e30 [shape=record,label="{label6:                                           \l  %reg7 = load i32, i32* %i, align 4\l  %reg8 = icmp slt i32 %reg7, 4\l  br i1 %reg8, label %label9, label %label19\l|{<s0>T|<s1>F}}"];
+	Node0xf57e30:s0 -> Node0xf58050;
+	Node0xf57e30:s1 -> Node0xf54420;
+	Node0xf58050 [shape=record,label="{label9:                                           \l  %reg10 = load i32, i32* %i, align 4\l  %reg11 = load i32, i32* %i, align 4\l  %reg12 = sext i32 %reg11 to i64\l  %reg13 = getelementptr inbounds [4 x i32], [4 x i32]* %table, i32 0, i64\l... %reg12\l  %reg14 = load i32, i32* %reg13, align 4\l  %reg15 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([9 x i8],\l... [9 x i8]* @.str, i32 0, i32 0), i32 %reg10, i32 %reg14)\l  br label %label16\l}"];
+	Node0xf58050 -> Node0xf58cb0;
+	Node0xf58cb0 [shape=record,label="{label16:                                          \l  %reg17 = load i32, i32* %i, align 4\l  %reg18 = add nsw i32 %reg17, 1\l  store i32 %reg18, i32* %i, align 4\l  br label %label6\l}"];
+	Node0xf58cb0 -> Node0xf57e30;
+	Node0xf54420 [shape=record,label="{label19:                                          \l  %reg20 = load i32, i32* %reg1\l  ret i32 %reg20\l}"];
+}
