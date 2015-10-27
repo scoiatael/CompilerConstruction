@@ -7,8 +7,6 @@ target triple = "x86_64-unknown-linux-gnu"
 
 ; Function Attrs: nounwind uwtable
 define void @sort(i32* %ptr1, i32* %ptr2) #0 {
-  %start = alloca i32*, align 8
-  %min = alloca i32, align 4
   %reg5 = icmp uge i32* %ptr1, %ptr2
   br i1 %reg5, label %label6, label %label7
 
@@ -16,36 +14,30 @@ label6:                                       ; preds = %reg0
   br label %label38
 
 label7:                                       ; preds = %reg0
-  store i32* %ptr1, i32** %start, align 8
-  %reg9 = load i32*, i32** %start, align 8
-  %reg10 = load i32, i32* %reg9, align 4
-  store i32 %reg10, i32* %min, align 4
+  %reg10 = load i32, i32* %ptr1, align 4
   %reg12 = getelementptr inbounds i32, i32* %ptr1, i32 1
   br label %label13
 
 label13:                                      ; preds = %reg31, %reg7
+  %imin = phi i32 [%reg10, %label7], [%ireg2, %label31]
   %reg14 = phi i32* [%reg12, %label7], [%reg33, %label31]
   %reg16 = icmp ult i32* %reg14, %ptr2
   br i1 %reg16, label %label17, label %label34
 
 label17:                                      ; preds = %reg13
   %reg19 = load i32, i32* %reg14, align 4
-  %reg20 = load i32, i32* %min, align 4
-  %reg21 = icmp ult i32 %reg19, %reg20
+  %reg21 = icmp ult i32 %reg19, %imin
   br i1 %reg21, label %label22, label %label30
 
 label22:                                      ; preds = %reg17
   %reg24 = load i32, i32* %reg14, align 4
-  %reg25 = load i32*, i32** %start, align 8
-  store i32 %reg24, i32* %reg25, align 4
-  %reg26 = load i32, i32* %min, align 4
-  store i32 %reg26, i32* %reg14, align 4
-  %reg28 = load i32*, i32** %start, align 8
-  %reg29 = load i32, i32* %reg28, align 4
-  store i32 %reg29, i32* %min, align 4
+  store i32 %reg24, i32* %ptr1, align 4
+  store i32 %imin, i32* %reg14, align 4
+  %reg29 = load i32, i32* %ptr1, align 4
   br label %label30
 
 label30:                                      ; preds = %reg22, %reg17
+  %ireg2 = phi i32 [%imin, %label17], [%reg29, %label22]
   %ireg1 = phi i32* [%reg14, %label22], [%reg14, %label17]
   br label %label31
 
@@ -54,8 +46,7 @@ label31:                                      ; preds = %reg30
   br label %label13
 
 label34:                                      ; preds = %reg13
-  %reg35 = load i32*, i32** %start, align 8
-  %reg36 = getelementptr inbounds i32, i32* %reg35, i64 1
+  %reg36 = getelementptr inbounds i32, i32* %ptr1, i64 1
   call void @sort(i32* %reg36, i32* %ptr2)
   br label %label38
 
