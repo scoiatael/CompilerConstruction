@@ -1,0 +1,3 @@
+[submodule "Kaleidoscope/kaleidoscope"]
+	path = Kaleidoscope/kaleidoscope
+	url = git@github.com:sdiehl/kaleidoscope.git
