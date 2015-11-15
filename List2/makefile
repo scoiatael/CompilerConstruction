@@ -17,14 +17,6 @@ all: $(TARGETS)
 analysis-for-% : %.ll
 	opt -analyze -dot-$(ANALYSIS) $<
 
-opt-for-%: %.ll
-	-mkdir $(TMP)
-	opt -S $(OPT) -print-after-all $< 2>&1 | ruby -e ' \
-p = [[]]; \
-STDIN.each_line { |l| p.push([])  if l =~ /^\*\*\*/; p.last << l }; \
-p.map { |a| a.join("") } .each.with_index { |a, i| File.write("$(TMP)/" + "#{ "%03d" %i}-nth-#{a.lines.first}.ll".gsub(/( |\/)/, "_"), a) }'
-
-
 %.png : %.dot
 	dot -Tpng $< > $@
 	rm $<
