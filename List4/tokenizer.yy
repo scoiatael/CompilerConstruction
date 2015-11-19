@@ -6,7 +6,8 @@
 %}
 
 DIGIT    [0-9]
-FLOAT    {DIGIT}+("."{DIGIT}+)?([eE]{DIGIT}+("."{DIGIT}+)?)?
+SIGN     [-+]?
+FLOAT    {SIGN}{DIGIT}+("."{DIGIT}+)?([eE]{SIGN}{DIGIT}+("."{DIGIT}+)?)?
 ID       [a-z][a-z0-9]*
 
 %%
@@ -27,11 +28,11 @@ if|then|else|fun|type {
 
 "+"|"-"|"*"|"/"|":="|"="|"<-"|"->"|"=>" printf( "(OPERATOR: %s) ", yytext );
 
-"/*"((\*+[^/])|[^/*])*"*/" /* eat up one-line comments */
+"/""*"((\*+[^/])|[^*])*"*""/" /* eat up one-line comments */
 
-\n+ printf("\n");
+"/""/".*\n /* one-line comments */
 
-[ \t]+ /* eat up whitespace */
+[ \t\n]+ /* eat up whitespace */
 
 "{" printf("(CURLY START) ", yytext);
 
