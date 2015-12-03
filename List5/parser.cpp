@@ -109,6 +109,7 @@ DEB(
     head -> initialized = false;
     tail -> initialized = false;
     head->parent = tail;
+    tail->parent = this->parent;
     return head;
   }
 };
@@ -165,6 +166,7 @@ DEB(
           case tkn_RPAR:
             assert(top.state == 1);
             p.close();
+            current_result_node = current_result_node->parent;
             tt. lookahead. pop_front( );
             break;
           case tkn_LPAR:
@@ -194,9 +196,6 @@ DEB(
         switch(lookahead.type)
           {
           case tkn_RPAR:
-            if(top.state == 1) {
-                current_result_node = current_result_node->parent->parent;
-            }
             p.close();
             break;
           default:
