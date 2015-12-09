@@ -41,16 +41,16 @@ double tree::eval(varstore& vars) const
 
       if(this->nrsubtrees() == 1) {
         if(thisstring == "-") {
-          return -1 * this->eval(vars);
+          return -1 * self[0].eval(vars);
         }
 
         if(thisstring == "+") {
-          return this->eval(vars);
+          return self[0].eval(vars);
         }
 
         if(thisstring == "!") {
           double acc = 1;
-          for(int i=0,val=this->eval(vars); i<val; i++) { acc*=i; }
+          for(int i=1,val=self[0].eval(vars); i <= val; i++) { acc*=i; }
           return acc;
         }
         throw std::runtime_error("Unknown unary operator");

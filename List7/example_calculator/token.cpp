@@ -28,23 +28,27 @@ bool token::iswellformed( ) const
    case tkn_Start:
       if( id. size( ) >= 1 ) return false;
       if( reason. size( ) >= 1 ) return false;
+      if( trees. size( ) >= 1 ) return false;
       if( value. size( ) >= 1 ) return false;
       return true;
    case tkn_SCANERROR:
       if( id. size( ) >= 1 ) return false;
       if( reason. size( ) < 1 ) return false;
       if( reason. size( ) >= 2 ) return false;
+      if( trees. size( ) >= 1 ) return false;
       if( value. size( ) >= 1 ) return false;
       return true;
    case tkn_IDENTIFIER:
       if( id. size( ) < 1 ) return false;
       if( id. size( ) >= 2 ) return false;
       if( reason. size( ) >= 1 ) return false;
+      if( trees. size( ) >= 1 ) return false;
       if( value. size( ) >= 1 ) return false;
       return true;
    case tkn_NUMBER:
       if( id. size( ) >= 1 ) return false;
       if( reason. size( ) >= 1 ) return false;
+      if( trees. size( ) >= 1 ) return false;
       if( value. size( ) < 1 ) return false;
       if( value. size( ) >= 2 ) return false;
       return true;
@@ -54,11 +58,14 @@ bool token::iswellformed( ) const
    case tkn_H:
       if( id. size( ) >= 1 ) return false;
       if( reason. size( ) >= 1 ) return false;
-      if( value. size( ) >= 2 ) return false;
+      if( trees. size( ) < 1 ) return false;
+      if( trees. size( ) >= 2 ) return false;
+      if( value. size( ) >= 1 ) return false;
       return true;
    case tkn_LISTARGS:
       if( id. size( ) >= 1 ) return false;
       if( reason. size( ) >= 1 ) return false;
+      if( value. size( ) >= 1 ) return false;
       return true;
    }
    return false; // Because of unknown type.
@@ -145,6 +152,19 @@ std::ostream& operator << ( std::ostream& stream, const token& t )
    for( std::list< std::string > :: const_iterator
            p = t. reason. begin( );
            p != t. reason. end( );
+           ++ p )
+   {
+      if( arg != 0 && arginlist == 0 ) stream << "; ";
+      if( arg != 0 && arginlist != 0 ) stream << ", ";
+      stream << *p;
+      ++ arg;
+      ++ arginlist;
+   }
+
+   arginlist = 0;
+   for( std::list< tree > :: const_iterator
+           p = t. trees. begin( );
+           p != t. trees. end( );
            ++ p )
    {
       if( arg != 0 && arginlist == 0 ) stream << "; ";

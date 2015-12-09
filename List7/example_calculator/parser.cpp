@@ -3,6 +3,8 @@
 
 
 #line 1
+#include "tree.h"
+
 
 
 // Non-terminal symbols:
@@ -15,7 +17,6 @@
    // Contains the stored variables.
 
 #include "varstore.h"
-#include "tree.h"
 
 #include "assert.h"
 #include <math.h>
@@ -266,7 +267,7 @@ void reduction_0(
    std::list < token > :: iterator EOF2 ) throw( refused )
 {
 
-#line 42 "calculator.m"
+#line 43 "calculator.m"
 
 std::cout << "bye bye\n";
 { reduce( stack, position, tkn_Start, tkn_Start ); return; }
@@ -281,7 +282,7 @@ void reduction_1(
    std::list < token > :: iterator Command2 ) throw( refused )
 {
 
-#line 46 "calculator.m"
+#line 47 "calculator.m"
 
 { reduce( stack, position, tkn_Session, tkn_Session ); return; }
 
@@ -293,7 +294,7 @@ void reduction_2(
    std::list < token > :: iterator position ) throw( refused )
 {
 
-#line 47 "calculator.m"
+#line 48 "calculator.m"
 
 { reduce( stack, position, tkn_Session, tkn_Session ); return; }
 
@@ -302,18 +303,17 @@ void reduction_2(
 
 void reduction_3(
    std::list < token > & stack,
+   varstore & memory, 
    std::list < token > :: iterator position,
    std::list < token > :: iterator E1,
    std::list < token > :: iterator SEMICOLON2 ) throw( refused )
 {
 
-#line 51 "calculator.m"
+#line 52 "calculator.m"
 
 
-if( E1 -> value. size( ))
-std::cout << " Result:  " << E1 -> value. front( ) << "\n";
-else
-std::cout << " Result is undefined\n";
+std::cout << " Tree:\n  " << E1 -> trees. front( ) << "\n";
+std::cout << "\tResult:  " << E1 -> trees. front( ).eval(memory) << "\n";
 
 { reduce( stack, position, tkn_Command, tkn_Command ); return; }
 
@@ -330,17 +330,12 @@ void reduction_4(
    std::list < token > :: iterator SEMICOLON4 ) throw( refused )
 {
 
-#line 58 "calculator.m"
+#line 57 "calculator.m"
 
 
-if( E3 -> value. size( ))
-{
-std::cout << " Assigning: " << IDENTIFIER1 -> id. front( ) << " := ";
-std::cout << E3 -> value. front( ) << "\n";
-memory. assign( IDENTIFIER1 -> id. front( ), E3 -> value. front( ));
-}
-else
-std::cout << " Result is undefined\n";
+tree result("=", std::vector<tree>{ IDENTIFIER1->trees.front(), E3->trees.front() });
+std::cout << " Tree:\n  " << result << "\n";
+std::cout << "\tResult:  " << result.eval(memory) << "\n";
 
 { reduce( stack, position, tkn_Command, tkn_Command ); return; }
 
@@ -354,7 +349,7 @@ void reduction_5(
    std::list < token > :: iterator SEMICOLON2 ) throw( refused )
 {
 
-#line 69 "calculator.m"
+#line 63 "calculator.m"
 
 
 std::cout << "recovered from error\n\n";
@@ -372,15 +367,12 @@ void reduction_6(
    std::list < token > :: iterator F3 ) throw( refused )
 {
 
-#line 75 "calculator.m"
+#line 69 "calculator.m"
 
 
 // If both E1 and F3 are defined, then compute result:
 
-if( E1 -> value. size( ) && F3 -> value. size( ))
-E1 -> value. front( ) += F3 -> value. front( );
-else
-E1 -> value. clear( );
+E1 -> trees.front() = tree("+", std::vector<tree>{E1 -> trees. front( ), F3 -> trees. front( )});
 { reduce( stack, position, tkn_E, E1 ); return; }
 
 { reduce( stack, position, tkn_E, tkn_E ); return; }
@@ -396,15 +388,12 @@ void reduction_7(
    std::list < token > :: iterator F3 ) throw( refused )
 {
 
-#line 85 "calculator.m"
+#line 76 "calculator.m"
 
 
 // If both E1 and F3 are defined, then compute result:
 
-if( E1 -> value. size( ) && F3 -> value. size( ))
-E1 -> value. front( ) -= F3 -> value. front( );
-else
-E1 -> value. clear( );
+E1 -> trees.front() = tree("-", std::vector<tree>{E1 -> trees. front( ), F3 -> trees. front( )});
 { reduce( stack, position, tkn_E, E1 ); return; }
 
 { reduce( stack, position, tkn_E, tkn_E ); return; }
@@ -418,7 +407,7 @@ void reduction_8(
    std::list < token > :: iterator F1 ) throw( refused )
 {
 
-#line 95 "calculator.m"
+#line 83 "calculator.m"
 
 
 // Change F into E, don't touch attribute.
@@ -439,15 +428,12 @@ void reduction_9(
    std::list < token > :: iterator G3 ) throw( refused )
 {
 
-#line 104 "calculator.m"
+#line 92 "calculator.m"
 
 
 // If both E1 and F3 are defined, then compute result:
 
-if( F1 -> value. size( ) && G3 -> value. size( ))
-F1 -> value. front( ) *= G3 -> value. front( );
-else
-F1 -> value. clear( );
+F1 -> trees.front() = tree("*", std::vector<tree>{F1 -> trees. front( ), G3 -> trees. front( )});
 { reduce( stack, position, tkn_F, F1 ); return; }
 
 { reduce( stack, position, tkn_F, tkn_F ); return; }
@@ -463,22 +449,10 @@ void reduction_10(
    std::list < token > :: iterator G3 ) throw( refused )
 {
 
-#line 114 "calculator.m"
+#line 99 "calculator.m"
 
 
-if( F1 -> value. size( ) && G3 -> value. size( ))
-{
-if( G3 -> value. front( ) != 0.0 )
-F1 -> value. front( ) /= G3 -> value. front( );
-else
-{
-std::cout << "division by zero!\n";
-F1 -> value. clear( );
-}
-}
-else
-F1 -> value. clear( );
-
+F1 -> trees.front() = tree("/", std::vector<tree>{F1 -> trees. front( ), G3 -> trees. front( )});
 { reduce( stack, position, tkn_F, F1 ); return; }
 
 { reduce( stack, position, tkn_F, tkn_F ); return; }
@@ -492,7 +466,7 @@ void reduction_11(
    std::list < token > :: iterator G1 ) throw( refused )
 {
 
-#line 131 "calculator.m"
+#line 104 "calculator.m"
 
 
 G1 -> type = tkn_F;
@@ -510,11 +484,10 @@ void reduction_12(
    std::list < token > :: iterator G2 ) throw( refused )
 {
 
-#line 139 "calculator.m"
+#line 112 "calculator.m"
 
 
-if( G2 -> value.size() )
-G2 -> value.front() = -1 * G2 -> value.front();
+G2 -> trees.front() = tree("-", std::vector<tree>{G2 -> trees.front()} );
 { reduce( stack, position, tkn_G, G2 ); return; }
 
 { reduce( stack, position, tkn_G, tkn_G ); return; }
@@ -529,9 +502,10 @@ void reduction_13(
    std::list < token > :: iterator G2 ) throw( refused )
 {
 
-#line 145 "calculator.m"
+#line 117 "calculator.m"
 
 
+G2 -> trees.front() = tree("+", std::vector<tree>{G2 -> trees.front()} );
 { reduce( stack, position, tkn_G, G2 ); return; }
 
 { reduce( stack, position, tkn_G, tkn_G ); return; }
@@ -545,7 +519,7 @@ void reduction_14(
    std::list < token > :: iterator H1 ) throw( refused )
 {
 
-#line 149 "calculator.m"
+#line 122 "calculator.m"
 
 
 H1 -> type = tkn_G;
@@ -563,33 +537,10 @@ void reduction_15(
    std::list < token > :: iterator FACTORIAL2 ) throw( refused )
 {
 
-#line 157 "calculator.m"
+#line 130 "calculator.m"
 
 
-if( ! H1 -> value. size( ))
-{ reduce( stack, position, tkn_H, H1 ); return; }
-
-if( H1 -> value. front( ) >= 0 &&
-floor( H1 -> value. front( )) == H1 -> value. front( ))
-{
-unsigned int f = static_cast< unsigned int >
-( floor( H1 -> value. front( ) + 0.1 ));
-
-double res = 1.0;
-while( f != 0 )
-{
-res *= f;
--- f;
-}
-
-H1 -> value. front( ) = res;
-}
-else
-{
-std::cout << "cannot compute " << H1 -> value. front( ) << " !\n\n";
-H1 -> value. clear( );
-}
-
+H1 -> trees.front() = tree("!", std::vector<tree>{H1 -> trees.front()} );
 { reduce( stack, position, tkn_H, H1 ); return; }
 
 { reduce( stack, position, tkn_H, tkn_H ); return; }
@@ -605,7 +556,7 @@ void reduction_16(
    std::list < token > :: iterator RPAR3 ) throw( refused )
 {
 
-#line 185 "calculator.m"
+#line 135 "calculator.m"
 
 
 E2 -> type = tkn_H;
@@ -618,26 +569,16 @@ E2 -> type = tkn_H;
 
 void reduction_17(
    std::list < token > & stack,
-   varstore & memory, 
    std::list < token > :: iterator position,
    std::list < token > :: iterator IDENTIFIER1 ) throw( refused )
 {
 
-#line 190 "calculator.m"
+#line 140 "calculator.m"
 
 
 token h = tkn_H;
-if( memory. contains( IDENTIFIER1 -> id. front( )))
-{
-h. value. push_back( memory. lookup( IDENTIFIER1 -> id. front( )));
+h.trees.push_back(tree(IDENTIFIER1 -> id. front( )));
 { reduce( stack, position, tkn_H, h ); return; }
-}
-else
-{
-std::cout << "variable " << IDENTIFIER1 -> id. front( );
-std::cout << " has no value!\n";
-{ reduce( stack, position, tkn_H, tkn_H ); return; }
-}
 
 { reduce( stack, position, tkn_H, tkn_H ); return; }
 
@@ -650,11 +591,12 @@ void reduction_18(
    std::list < token > :: iterator NUMBER1 ) throw( refused )
 {
 
-#line 205 "calculator.m"
+#line 146 "calculator.m"
 
 
-NUMBER1 -> type = tkn_H;
-{ reduce( stack, position, tkn_H, NUMBER1 ); return; }
+token h = tkn_H;
+h.trees.push_back(tree(NUMBER1 -> value. front( )));
+{ reduce( stack, position, tkn_H, h ); return; }
 
 { reduce( stack, position, tkn_H, tkn_H ); return; }
 
@@ -670,28 +612,12 @@ void reduction_19(
    std::list < token > :: iterator RPAR4 ) throw( refused )
 {
 
-#line 210 "calculator.m"
+#line 152 "calculator.m"
 
 
 token h = tkn_H;
-if( IDENTIFIER1 -> id. front( ) == "sin" &&
-LISTARGS3 -> value. size( ) == 1 )
-{
-h. value. push_back( sin( LISTARGS3 -> value. front( )));
+h.trees.push_back( tree(IDENTIFIER1 -> id.front(), std::vector<tree>{std::begin(LISTARGS3 -> trees), std::end(LISTARGS3 -> trees)}));
 { reduce( stack, position, tkn_H, h ); return; }
-}
-
-if( IDENTIFIER1 -> id. front( ) == "pow" &&
-LISTARGS3 -> value. size( ) == 2 )
-{
-h. value. push_back( pow( LISTARGS3 -> value. front( ),
-LISTARGS3 -> value. back( )));
-{ reduce( stack, position, tkn_H, h ); return; }
-}
-
-std::cout << "unrecognized function!\n";
-{ reduce( stack, position, tkn_H, h ); return; }
-// With empty attribute.
 
 { reduce( stack, position, tkn_H, tkn_H ); return; }
 
@@ -704,7 +630,7 @@ void reduction_20(
    std::list < token > :: iterator E1 ) throw( refused )
 {
 
-#line 235 "calculator.m"
+#line 161 "calculator.m"
 
 
 E1 -> type = tkn_LISTARGS;
@@ -723,15 +649,10 @@ void reduction_21(
    std::list < token > :: iterator E3 ) throw( refused )
 {
 
-#line 240 "calculator.m"
+#line 166 "calculator.m"
 
 
-// If both E1 and F3 are defined, then compute result:
-
-if( LISTARGS1 -> value. size( ) && E3 -> value. size( ))
-LISTARGS1 -> value. push_back( E3->value.front() );
-else
-LISTARGS1 -> value. clear( );
+LISTARGS1 -> trees.push_back(E3 -> trees.front());
 { reduce( stack, position, tkn_LISTARGS, LISTARGS1 ); return; }
 
 { reduce( stack, position, tkn_LISTARGS, tkn_LISTARGS ); return; }
@@ -1010,7 +931,7 @@ case 2:
    reduction_2( parsestack, parsestack. end( ) - 0 );
    break;
 case 3:
-   reduction_3( parsestack, parsestack. end( ) - 2, parsestack. end( ) - 2, parsestack. end( ) - 1 );
+   reduction_3( parsestack, memory, parsestack. end( ) - 2, parsestack. end( ) - 2, parsestack. end( ) - 1 );
    break;
 case 4:
    reduction_4( parsestack, memory, parsestack. end( ) - 4, parsestack. end( ) - 4, parsestack. end( ) - 3, parsestack. end( ) - 2, parsestack. end( ) - 1 );
@@ -1052,7 +973,7 @@ case 16:
    reduction_16( parsestack, parsestack. end( ) - 3, parsestack. end( ) - 3, parsestack. end( ) - 2, parsestack. end( ) - 1 );
    break;
 case 17:
-   reduction_17( parsestack, memory, parsestack. end( ) - 1, parsestack. end( ) - 1 );
+   reduction_17( parsestack, parsestack. end( ) - 1, parsestack. end( ) - 1 );
    break;
 case 18:
    reduction_18( parsestack, parsestack. end( ) - 1, parsestack. end( ) - 1 );

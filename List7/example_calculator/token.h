@@ -1,3 +1,4 @@
+#include "tree.h"
 
 // This code was produced by Maphoon 2008.
 // Definition of struct token:
@@ -48,6 +49,7 @@ struct token
 
    std::list< std::string > id;
    std::list< std::string > reason;
+   std::list< tree > trees;
    std::list< double > value;
 
    token( tokentype t )
