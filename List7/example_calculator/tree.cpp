@@ -47,6 +47,12 @@ double tree::eval(varstore& vars) const
         if(thisstring == "+") {
           return this->eval(vars);
         }
+
+        if(thisstring == "!") {
+          double acc = 1;
+          for(int i=0,val=this->eval(vars); i<val; i++) { acc*=i; }
+          return acc;
+        }
         throw std::runtime_error("Unknown unary operator");
       }
 
