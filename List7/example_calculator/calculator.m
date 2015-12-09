@@ -21,6 +21,13 @@
 
 %constraint IDENTIFIER  id 1 2
    // You may write the others.
+%constraint E value 0 2
+%constraint F value 0 2
+%constraint G value 0 2
+%constraint H value 0 2
+%constraint LISTARGS value 0
+%constraint SCANERROR reason 1 2
+%constraint NUMBER value 1 2
 
 %global memory varstore
    // Contains the stored variables.
@@ -75,7 +82,15 @@
       E1 -> value. clear( );
    return E1;
 
-%     | E MINUS F 
+%     | E MINUS F
+
+   // If both E1 and F3 are defined, then compute result:
+
+   if( E1 -> value. size( ) && F3 -> value. size( ))
+      E1 -> value. front( ) -= F3 -> value. front( );
+   else
+      E1 -> value. clear( );
+   return E1;
 
 %     | F 
 
@@ -86,7 +101,15 @@
 
 %     ;
 
-% F   : F TIMES G 
+% F   : F TIMES G
+
+    // If both E1 and F3 are defined, then compute result:
+
+    if( F1 -> value. size( ) && G3 -> value. size( ))
+       F1 -> value. front( ) *= G3 -> value. front( );
+    else
+       F1 -> value. clear( );
+    return F1;
 
 %     | F DIVIDES G
 
@@ -105,16 +128,28 @@
  
    return F1;
  
-%     | G 
+%     | G
+
+   G1 -> type = tkn_F;
+   return G1;
 
 %     ;
 
 
-%  G : MINUS G 
+%  G : MINUS G
 
-%    | PLUS G 
+   if( G2 -> value.size() )
+       G2 -> value.front() = -1 * G2 -> value.front();
+   return G2;
 
-%    | H 
+%    | PLUS G
+
+   return G2;
+
+%    | H
+
+   H1 -> type = tkn_G;
+   return H1;
 
 %    ;
 
@@ -197,8 +232,21 @@
 %     ;
 
 
-% LISTARGS : E 
+% LISTARGS : E
+
+   E1 -> type = tkn_LISTARGS;
+   return E1;
+
 %          | LISTARGS COMMA E
+
+    // If both E1 and F3 are defined, then compute result:
+
+    if( LISTARGS1 -> value. size( ) && E3 -> value. size( ))
+       LISTARGS1 -> value. push_back( E3->value.front() );
+    else
+       LISTARGS1 -> value. clear( );
+    return LISTARGS1;
+
 %          ;
 
 

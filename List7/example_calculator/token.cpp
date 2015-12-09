@@ -13,11 +13,9 @@ bool token::iswellformed( ) const
    case tkn__recover:
    case tkn__defaultred:
    case tkn_EOF:
-   case tkn_SCANERROR:
    case tkn_SEMICOLON:
    case tkn_BECOMES:
    case tkn_COMMA:
-   case tkn_NUMBER:
    case tkn_PLUS:
    case tkn_TIMES:
    case tkn_MINUS:
@@ -25,11 +23,6 @@ bool token::iswellformed( ) const
    case tkn_FACTORIAL:
    case tkn_LPAR:
    case tkn_RPAR:
-   case tkn_E:
-   case tkn_F:
-   case tkn_G:
-   case tkn_H:
-   case tkn_LISTARGS:
    case tkn_Session:
    case tkn_Command:
    case tkn_Start:
@@ -37,11 +30,35 @@ bool token::iswellformed( ) const
       if( reason. size( ) >= 1 ) return false;
       if( value. size( ) >= 1 ) return false;
       return true;
+   case tkn_SCANERROR:
+      if( id. size( ) >= 1 ) return false;
+      if( reason. size( ) < 1 ) return false;
+      if( reason. size( ) >= 2 ) return false;
+      if( value. size( ) >= 1 ) return false;
+      return true;
    case tkn_IDENTIFIER:
       if( id. size( ) < 1 ) return false;
       if( id. size( ) >= 2 ) return false;
       if( reason. size( ) >= 1 ) return false;
       if( value. size( ) >= 1 ) return false;
+      return true;
+   case tkn_NUMBER:
+      if( id. size( ) >= 1 ) return false;
+      if( reason. size( ) >= 1 ) return false;
+      if( value. size( ) < 1 ) return false;
+      if( value. size( ) >= 2 ) return false;
+      return true;
+   case tkn_E:
+   case tkn_F:
+   case tkn_G:
+   case tkn_H:
+      if( id. size( ) >= 1 ) return false;
+      if( reason. size( ) >= 1 ) return false;
+      if( value. size( ) >= 2 ) return false;
+      return true;
+   case tkn_LISTARGS:
+      if( id. size( ) >= 1 ) return false;
+      if( reason. size( ) >= 1 ) return false;
       return true;
    }
    return false; // Because of unknown type.

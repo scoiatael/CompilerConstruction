@@ -3,7 +3,7 @@
 
 
 #line 1
-
+#definet MAPH_DEBUG
 
 
 // Non-terminal symbols:
@@ -13,9 +13,11 @@
 
    // You may write the others.
 
-   // Contains stored variables.
+   // Contains the stored variables.
 
 #include "varstore.h"
+#include "tree.h"
+
 #include "assert.h"
 #include <math.h>
 
@@ -265,7 +267,7 @@ void reduction_0(
    std::list < token > :: iterator EOF2 ) throw( refused )
 {
 
-#line 33 "calculator.m"
+#line 42 "calculator.m"
 
 std::cout << "bye bye\n";
 { reduce( stack, position, tkn_Start, tkn_Start ); return; }
@@ -280,7 +282,7 @@ void reduction_1(
    std::list < token > :: iterator Command2 ) throw( refused )
 {
 
-#line 37 "calculator.m"
+#line 46 "calculator.m"
 
 { reduce( stack, position, tkn_Session, tkn_Session ); return; }
 
@@ -292,7 +294,7 @@ void reduction_2(
    std::list < token > :: iterator position ) throw( refused )
 {
 
-#line 38 "calculator.m"
+#line 47 "calculator.m"
 
 { reduce( stack, position, tkn_Session, tkn_Session ); return; }
 
@@ -306,7 +308,7 @@ void reduction_3(
    std::list < token > :: iterator SEMICOLON2 ) throw( refused )
 {
 
-#line 42 "calculator.m"
+#line 51 "calculator.m"
 
 
 if( E1 -> value. size( ))
@@ -329,7 +331,7 @@ void reduction_4(
    std::list < token > :: iterator SEMICOLON4 ) throw( refused )
 {
 
-#line 49 "calculator.m"
+#line 58 "calculator.m"
 
 
 if( E3 -> value. size( ))
@@ -353,7 +355,7 @@ void reduction_5(
    std::list < token > :: iterator SEMICOLON2 ) throw( refused )
 {
 
-#line 60 "calculator.m"
+#line 69 "calculator.m"
 
 
 std::cout << "recovered from error\n\n";
@@ -371,7 +373,7 @@ void reduction_6(
    std::list < token > :: iterator F3 ) throw( refused )
 {
 
-#line 66 "calculator.m"
+#line 75 "calculator.m"
 
 
 // If both E1 and F3 are defined, then compute result:
@@ -395,8 +397,16 @@ void reduction_7(
    std::list < token > :: iterator F3 ) throw( refused )
 {
 
-#line 76 "calculator.m"
+#line 85 "calculator.m"
 
+
+// If both E1 and F3 are defined, then compute result:
+
+if( E1 -> value. size( ) && F3 -> value. size( ))
+E1 -> value. front( ) -= F3 -> value. front( );
+else
+E1 -> value. clear( );
+{ reduce( stack, position, tkn_E, E1 ); return; }
 
 { reduce( stack, position, tkn_E, tkn_E ); return; }
 
@@ -409,7 +419,7 @@ void reduction_8(
    std::list < token > :: iterator F1 ) throw( refused )
 {
 
-#line 78 "calculator.m"
+#line 95 "calculator.m"
 
 
 // Change F into E, don't touch attribute.
@@ -430,8 +440,16 @@ void reduction_9(
    std::list < token > :: iterator G3 ) throw( refused )
 {
 
-#line 87 "calculator.m"
+#line 104 "calculator.m"
 
+
+// If both E1 and F3 are defined, then compute result:
+
+if( F1 -> value. size( ) && G3 -> value. size( ))
+F1 -> value. front( ) *= G3 -> value. front( );
+else
+F1 -> value. clear( );
+{ reduce( stack, position, tkn_F, F1 ); return; }
 
 { reduce( stack, position, tkn_F, tkn_F ); return; }
 
@@ -446,7 +464,7 @@ void reduction_10(
    std::list < token > :: iterator G3 ) throw( refused )
 {
 
-#line 89 "calculator.m"
+#line 114 "calculator.m"
 
 
 if( F1 -> value. size( ) && G3 -> value. size( ))
@@ -475,8 +493,11 @@ void reduction_11(
    std::list < token > :: iterator G1 ) throw( refused )
 {
 
-#line 106 "calculator.m"
+#line 131 "calculator.m"
 
+
+G1 -> type = tkn_F;
+{ reduce( stack, position, tkn_F, G1 ); return; }
 
 { reduce( stack, position, tkn_F, tkn_F ); return; }
 
@@ -490,8 +511,12 @@ void reduction_12(
    std::list < token > :: iterator G2 ) throw( refused )
 {
 
-#line 111 "calculator.m"
+#line 139 "calculator.m"
 
+
+if( G2 -> value.size() )
+G2 -> value.front() = -1 * G2 -> value.front();
+{ reduce( stack, position, tkn_G, G2 ); return; }
 
 { reduce( stack, position, tkn_G, tkn_G ); return; }
 
@@ -505,8 +530,10 @@ void reduction_13(
    std::list < token > :: iterator G2 ) throw( refused )
 {
 
-#line 113 "calculator.m"
+#line 145 "calculator.m"
 
+
+{ reduce( stack, position, tkn_G, G2 ); return; }
 
 { reduce( stack, position, tkn_G, tkn_G ); return; }
 
@@ -519,8 +546,11 @@ void reduction_14(
    std::list < token > :: iterator H1 ) throw( refused )
 {
 
-#line 115 "calculator.m"
+#line 149 "calculator.m"
 
+
+H1 -> type = tkn_G;
+{ reduce( stack, position, tkn_G, H1 ); return; }
 
 { reduce( stack, position, tkn_G, tkn_G ); return; }
 
@@ -534,7 +564,7 @@ void reduction_15(
    std::list < token > :: iterator FACTORIAL2 ) throw( refused )
 {
 
-#line 120 "calculator.m"
+#line 157 "calculator.m"
 
 
 if( ! H1 -> value. size( ))
@@ -576,7 +606,7 @@ void reduction_16(
    std::list < token > :: iterator RPAR3 ) throw( refused )
 {
 
-#line 148 "calculator.m"
+#line 185 "calculator.m"
 
 
 E2 -> type = tkn_H;
@@ -594,7 +624,7 @@ void reduction_17(
    std::list < token > :: iterator IDENTIFIER1 ) throw( refused )
 {
 
-#line 153 "calculator.m"
+#line 190 "calculator.m"
 
 
 token h = tkn_H;
@@ -621,7 +651,7 @@ void reduction_18(
    std::list < token > :: iterator NUMBER1 ) throw( refused )
 {
 
-#line 168 "calculator.m"
+#line 205 "calculator.m"
 
 
 NUMBER1 -> type = tkn_H;
@@ -641,7 +671,7 @@ void reduction_19(
    std::list < token > :: iterator RPAR4 ) throw( refused )
 {
 
-#line 173 "calculator.m"
+#line 210 "calculator.m"
 
 
 token h = tkn_H;
@@ -675,7 +705,11 @@ void reduction_20(
    std::list < token > :: iterator E1 ) throw( refused )
 {
 
-#line 198 "calculator.m"
+#line 235 "calculator.m"
+
+
+E1 -> type = tkn_LISTARGS;
+{ reduce( stack, position, tkn_LISTARGS, E1 ); return; }
 
 { reduce( stack, position, tkn_LISTARGS, tkn_LISTARGS ); return; }
 
@@ -690,7 +724,16 @@ void reduction_21(
    std::list < token > :: iterator E3 ) throw( refused )
 {
 
-#line 199 "calculator.m"
+#line 240 "calculator.m"
+
+
+// If both E1 and F3 are defined, then compute result:
+
+if( LISTARGS1 -> value. size( ) && E3 -> value. size( ))
+LISTARGS1 -> value. push_back( E3->value.front() );
+else
+LISTARGS1 -> value. clear( );
+{ reduce( stack, position, tkn_LISTARGS, LISTARGS1 ); return; }
 
 { reduce( stack, position, tkn_LISTARGS, tkn_LISTARGS ); return; }
 
