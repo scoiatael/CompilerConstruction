@@ -3,10 +3,11 @@
 #ifndef TREE_INCLUDED
 #define TREE_INCLUDED  1
 
-
+#include "varstore.h"
 #include <iostream>
 #include <vector>
 #include <string>
+#include <math.h>
 
 class tree;
 
@@ -160,6 +161,8 @@ public:
    {
       pntr -> val -> print( out );
    }
+
+  double eval(varstore& vars) const;
 
 };
 

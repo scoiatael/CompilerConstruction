@@ -30,6 +30,7 @@
 %constraint NUMBER value 1 2
 
 %global memory varstore
+%global list std::vector<tree>
    // Contains the stored variables.
 
 #include "varstore.h"

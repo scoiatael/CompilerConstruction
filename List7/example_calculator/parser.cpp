@@ -3,7 +3,6 @@
 
 
 #line 1
-#definet MAPH_DEBUG
 
 
 // Non-terminal symbols:
