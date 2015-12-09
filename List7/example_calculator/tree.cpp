@@ -39,6 +39,16 @@ double tree::eval(varstore& vars) const
         return sin( self[0].eval(vars));
       }
 
+      if(this->nrsubtrees() == 1) {
+        if(thisstring == "-") {
+          return -1 * this->eval(vars);
+        }
+
+        if(thisstring == "+") {
+          return this->eval(vars);
+        }
+      }
+
       double rhs = self[1].eval(vars);
       if(thisstring == "pow") {
         return pow( self[0].eval(vars), rhs);
